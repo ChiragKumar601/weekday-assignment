@@ -68,14 +68,25 @@ const minSal = [
 const minSalaryOptions = [{ options: minSal }];
 
 export const Header = (props) => {
-  const { roles, setRoles, experience, setExperience, jobMode, setJobMode, minBasePay, setMinBasePay } = useContext(DataContext);
+  const {
+    roles,
+    setRoles,
+    experience,
+    setExperience,
+    jobMode,
+    setJobMode,
+    minBasePay,
+    setMinBasePay,
+    searchCompanyName,
+    setSearchCompanyName,
+  } = useContext(DataContext);
   return (
     <div className="header">
       <Filter
         className="filter-left"
         value={roles}
         onChange={setRoles}
-        minWidth="8rem"
+        minWidth="6rem"
         label="Roles"
         options={rolesOptions}
         placeholder="Roles"
@@ -100,7 +111,7 @@ export const Header = (props) => {
       />
       <Filter
         className="filter-left"
-        minWidth="5rem"
+        minWidth="3.5rem"
         label="Remote"
         value={jobMode}
         onChange={setJobMode}
@@ -118,8 +129,11 @@ export const Header = (props) => {
         placeholder="Minimum Base Pay Salary"
       />
       <input
-        type="text"
-        placeholder="Search companies..."
+        className="filter-left"
+        value={searchCompanyName}
+        onChange={(e) => setSearchCompanyName(e.target.value)}
+        label="Search Company Name"
+        placeholder="Search Company Name"
       />
     </div>
   );

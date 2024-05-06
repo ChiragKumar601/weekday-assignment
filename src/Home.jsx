@@ -6,8 +6,15 @@ import { Card } from "./Card";
 
 export const Home = () => {
   const [offset, setOffset] = useState(0);
-  const { jobList, setJobList, roles, experience, jobMode, minBasePay } =
-    useContext(DataContext);
+  const {
+    jobList,
+    setJobList,
+    roles,
+    experience,
+    jobMode,
+    minBasePay,
+    searchCompanyName,
+  } = useContext(DataContext);
 
   const getData = async () => {
     const myHeaders = new Headers();
@@ -38,20 +45,19 @@ export const Home = () => {
 
   const currentJobList = useMemo(() => {
     let finalJobList = jobList;
-
     // If roles are selected from dropdown
-    if (roles.length !== 0) {
+    if (finalJobList.length !== 0 && roles.length !== 0) {
       finalJobList = finalJobList.filter((job) =>
         roles.some((role) => role.value === job.jobRole)
       );
     }
-    if (Object.keys(experience).length !== 0) {
+    if (finalJobList.length !== 0 && Object.keys(experience).length !== 0) {
       const exp = parseInt(experience.value);
       finalJobList = finalJobList.filter((job) => job.minExp >= exp);
     }
 
     // If job mode are selected from dropdown- like whether job is onsite or remote
-    if (jobMode.length !== 0) {
+    if (finalJobList.length !== 0 && jobMode.length !== 0) {
       finalJobList = finalJobList.filter((job) =>
         jobMode.some((pos) => {
           if (pos.value !== "remote") {
@@ -61,14 +67,21 @@ export const Home = () => {
         })
       );
     }
-    if (Object.keys(minBasePay).length !== 0) {
+    if (finalJobList.length !== 0 && Object.keys(minBasePay).length !== 0) {
       const minimum_payment = parseInt(minBasePay.value);
       finalJobList = finalJobList.filter(
         (job) => job.minJdSalary >= minimum_payment
       );
     }
+    if (finalJobList.length !== 0 && searchCompanyName.length !== 0) {
+      finalJobList = finalJobList.filter((job) =>{
+        if(job.companyName.includes(searchCompanyName))
+          return true;
+        return false;
+      });
+    }
     return finalJobList;
-  }, [jobList, roles, experience, jobMode, minBasePay]);
+  }, [jobList, roles, experience, jobMode, minBasePay, searchCompanyName]);
 
   useEffect(() => {
     const handleObserver = (entries) => {

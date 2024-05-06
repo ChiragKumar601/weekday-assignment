@@ -15,6 +15,11 @@
   font-family: "Roboto", sans-serif;
 }
 
+.header{
+  display: flex;
+  flex-wrap: wrap;
+}
+
 /* setting up display page */
 .row {
   display: flex;
@@ -157,9 +162,6 @@
   justify-content: center;
   gap: 15px;
 }
-/* .filter-left{
-  text-align: left;
-} */
 
 .load-more {
   height: 20px;

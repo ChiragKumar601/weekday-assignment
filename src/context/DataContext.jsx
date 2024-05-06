@@ -6,11 +6,13 @@ const initialData = {
   experience: [],
   jobMode: [],
   minBasePay:[],
+  searchCompanyName:'',
   setJobList: undefined,
   setRoles: undefined,
   setExperience: undefined,
   setJobMode: undefined,
-  setMinBasePay: undefined
+  setMinBasePay: undefined,
+  setSearchCompanyName: undefined
 };
 
 const DataContext = createContext(initialData);
@@ -21,6 +23,7 @@ const DataContextProvider = (props) => {
   const [experience, setExperience] = useState([]);
   const [minBasePay, setMinBasePay] = useState([]);
   const [jobMode, setJobMode] = useState([]);
+  const [searchCompanyName, setSearchCompanyName] = useState('');
 
   return (
     <DataContext.Provider
@@ -30,11 +33,13 @@ const DataContextProvider = (props) => {
         experience,
         jobMode,
         minBasePay,
+        searchCompanyName,
         setJobList,
         setRoles,
         setExperience,
         setJobMode,
-        setMinBasePay
+        setMinBasePay,
+        setSearchCompanyName
       }}
     >
       {props.children}
