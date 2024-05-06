@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 
 import { DataContext } from "./context/DataContext";
 import { Header } from "./Header";
 import { Card } from "./Card";
 
 export const Home = () => {
-  const { jobList, setJobList, roles, experience, jobMode, minBasePay} =
+  const [offset, setOffset] = useState(0);
+  const { jobList, setJobList, roles, experience, jobMode, minBasePay } =
     useContext(DataContext);
 
   const getData = async () => {
@@ -13,7 +14,7 @@ export const Home = () => {
     myHeaders.append("Content-Type", "application/json");
     const body = JSON.stringify({
       limit: 10,
-      offset: 0,
+      offset: offset * 10,
     });
 
     const requestOptions = {
@@ -28,8 +29,8 @@ export const Home = () => {
         requestOptions
       );
       const data = await result.json();
-      setJobList(data.jdList);
-      console.log(jobList);
+      setJobList([...jobList, ...data.jdList]);
+      setOffset(offset + 1);
     } catch (err) {
       console.log(err);
     }
@@ -37,8 +38,6 @@ export const Home = () => {
 
   const currentJobList = useMemo(() => {
     let finalJobList = jobList;
-    console.log("Job List>>>", jobList);
-    console.log("Experience>>>", typeof parseInt(experience.value), parseInt(experience.value));
 
     // If roles are selected from dropdown
     if (roles.length !== 0) {
@@ -46,9 +45,9 @@ export const Home = () => {
         roles.some((role) => role.value === job.jobRole)
       );
     }
-    if(Object.keys(experience).length !== 0){
+    if (Object.keys(experience).length !== 0) {
       const exp = parseInt(experience.value);
-      finalJobList = finalJobList.filter((job) => job.minExp >= exp)
+      finalJobList = finalJobList.filter((job) => job.minExp >= exp);
     }
 
     // If job mode are selected from dropdown- like whether job is onsite or remote
@@ -62,16 +61,29 @@ export const Home = () => {
         })
       );
     }
-    if(Object.keys(minBasePay).length !== 0){
+    if (Object.keys(minBasePay).length !== 0) {
       const minimum_payment = parseInt(minBasePay.value);
-      finalJobList = finalJobList.filter((job) => job.minJdSalary >= minimum_payment)
+      finalJobList = finalJobList.filter(
+        (job) => job.minJdSalary >= minimum_payment
+      );
     }
     return finalJobList;
   }, [jobList, roles, experience, jobMode, minBasePay]);
 
   useEffect(() => {
-    getData();
-  }, []);
+    const handleObserver = (entries) => {
+      if (!entries[0].isIntersecting) return;
+      getData();
+    };
+
+    const observer = new IntersectionObserver(handleObserver);
+    const loadMoreContainer = document.getElementById("load-more");
+    observer.observe(loadMoreContainer, { threshold: 0.9 });
+
+    return () => {
+      observer.unobserve(loadMoreContainer);
+    };
+  }, [offset]);
 
   return (
     <div>
@@ -83,6 +95,7 @@ export const Home = () => {
           </div>
         ))}
       </div>
+      <div className="load-more" id="load-more"></div>
     </div>
   );
 };

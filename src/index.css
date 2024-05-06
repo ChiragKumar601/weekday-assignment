@@ -122,7 +122,7 @@
 .buttons {
   margin-top: 10px;
 }
-  /* Common styles for both buttons at bottom */
+/* Common styles for both buttons at bottom */
 .common-button-style {
   display: flex;
   align-items: center;
@@ -160,3 +160,24 @@
 /* .filter-left{
   text-align: left;
 } */
+
+.load-more {
+  height: 20px;
+  background-color: transparent;
+  width: 100%;
+}
+
+@media screen and (max-width: 900px) {
+  .col {
+    width: calc(50% - 15px);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .row {
+    gap: 0;
+  }
+  .col {
+    width: 100%;
+  }
+}
